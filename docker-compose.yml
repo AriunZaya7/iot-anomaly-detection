@@ -1,4 +1,3 @@
-version: "3.9"
 
 networks:
   iot-network:
@@ -55,6 +54,7 @@ services:
     networks:
       - iot-network
 
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -72,3 +72,26 @@ services:
       - "3000:3000"
     networks:
       - iot-network
+
+
+  feature-extraction:
+    build: ./Services/Feature_extraction
+    container_name: feature-extraction
+    environment:
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - kafka
+    networks:
+      - iot-network
+
+  anomaly-detection:
+    build: ./Services/Anomaly_detection
+    container_name: anomaly-detection
+    environment:
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - kafka
+      - feature-extraction
+    networks:
+      - iot-network
+
