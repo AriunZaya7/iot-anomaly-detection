@@ -9,7 +9,7 @@
     6. Frequency of data
     7. Anomaly probability
 """
-
+import os
 import time
 import json
 import random
@@ -17,23 +17,28 @@ from kafka import KafkaProducer
 import numpy as np
 import math
 
-# -------- CONFIGURATION --------
 NUM_SENSORS = 5
 PUBLISH_INTERVAL = 1.0  # seconds
 ANOMALY_PROB = 0.05  # point anomaly probability
 DRIFT_PROB = 0.01  # drift anomaly probability
 KAFKA_TOPIC = "raw-sensor-data"
-KAFKA_BROKER = "localhost:9092"
+KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "kafka:9092")
 
 # Sensor metadata options
 LOCATIONS = ["Room A", "Room B", "Room C", "Factory Floor", "Warehouse"]
 
-# -------- SETUP KAFKA --------
-producer = KafkaProducer(
-    bootstrap_servers=KAFKA_BROKER,
-    value_serializer=lambda v: json.dumps(v).encode("utf-8")
-)
 
+# Wait for Kafka to be ready
+while True:
+    try:
+        producer = KafkaProducer(
+            bootstrap_servers=KAFKA_BROKER,
+            value_serializer=lambda v: json.dumps(v).encode("utf-8")
+        )
+        break
+    except Exception as e:
+        print(f"Waiting for Kafka broker... {e}")
+        time.sleep(2)
 
 # -------- SENSOR SIMULATION --------
 class Sensor:

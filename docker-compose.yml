@@ -1,0 +1,74 @@
+version: "3.9"
+
+networks:
+  iot-network:
+    driver: bridge
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - iot-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - iot-network
+
+  ingestion-service:
+    build: ./Services/Ingestion_service
+    container_name: ingestion-service
+    environment:
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - kafka
+    ports:
+      - "8000:8000"   # FastAPI
+      - "8001:8001"   # Prometheus metrics
+    networks:
+      - iot-network
+
+  simulator:
+    build: ./Services/Scripts
+    container_name: simulator
+    environment:
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - kafka
+    networks:
+      - iot-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - iot-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - iot-network
