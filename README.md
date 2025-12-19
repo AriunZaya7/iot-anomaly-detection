@@ -54,6 +54,9 @@ The system exposes operational and sustainability metrics, which are collected b
 ![UC5 - Monitoring and Observability](Docs/Diagrams/UC5.png)
 
 
+## Component Diagram: 
+![C1 - components of iot anomaly detection](Docs/Diagrams/Component_d.png)
+
 
 ## Application scaffolding: 
 - simulator/: Sensor data generation
@@ -63,7 +66,7 @@ The system exposes operational and sustainability metrics, which are collected b
 - monitoring/: Prometheus , Grafana
 - k8s/: Kubernetes deployment manifests??
 
-##Monitoring & Observability
+## Monitoring & Observability
 
 This project includes basic observability using **Prometheus** and **Grafana** to monitor the real-time IoT anomaly detection pipeline.
 
@@ -88,7 +91,7 @@ An example **IoT Pipeline Overview** dashboard is included and automatically pro
 
 ### Access
 - **Prometheus UI**: http://localhost:9090  
-- **Grafana UI**:
+- **Grafana UI**: http://localhost:3000
 
 
 
