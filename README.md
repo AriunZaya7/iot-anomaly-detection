@@ -1,6 +1,5 @@
 # AI-Architecture-and-Cloud-Computing
 
-
 # Project Definition: 
 ## IOT-Anomaly-Detection-Platform:
 This project implements a cloud-native, microservice-based IoT data processing pipeline that simulates sensor data,
@@ -21,18 +20,38 @@ System consists of microservices that communicate using Kafka topics.
     - prometheus
     - grafana
 
+
 ## Use cases: 
-| **Use Case ID** | **Name**                      | **Description**                                                                                                                                                                          |
-|-----------------|-------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| UC1             | Simulate Sensor Data          | Simulated IoT sensors generate data (e.g., temperature, humidity, vibration) at intervals for simulated locations and publish the readings as  messages to a Kafka topic.                |
-| UC2             | Data Ingestion and Validation | The ingestion service consumes raw sensor data from Kafka, tracks ingestion metrics, and forwards valid messages to feature extraction.                                                  |
-| UC3             | Feature Extraction            | The feature extraction service transforms raw sensor readings into engineered features such as ratios and squared values, and publishes the data to a Kafka topic.                       |
-| UC4             | Anomaly Detection             | The anomaly detection service applies a machine learning model to extracted features to classify sensor behavior as normal or anomalous, and publishes labeled results for visualization |
-| UC5             | Monitoring and Observability  | The system exposes operational and sustainability metrics, which are collected by Prometheus and visualized in Grafana dashboards to monitor performance, anomalies, and system health.  |
+| **Use Case ID** | **Name**                      | **Description**                                                                                                                                                                           |
+|-----------------|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| UC1             | Simulate Sensor Data          | Simulated IoT sensors generate data (e.g., temperature, humidity, vibration) at intervals for simulated locations and publish the readings as  messages to a Kafka topic.                 |
+| UC2             | Data Ingestion and Validation | The ingestion service consumes raw sensor data from Kafka, tracks ingestion metrics, and forwards valid messages to feature extraction.                                                   |
+| UC3             | Feature Extraction            | The feature extraction service transforms raw sensor readings into engineered features such as ratios and squared values, and publishes the data to a Kafka topic.                        |
+| UC4             | Anomaly Detection             | The anomaly detection service applies a machine learning model to extracted features to classify sensor behavior as normal or anomalous, and publishes labeled results for visualization. |
+| UC5             | Monitoring and Observability  | The system exposes operational and sustainability metrics, which are collected by Prometheus and visualized in Grafana dashboards to monitor performance, anomalies, and system health.   |
+
+
 
 ### Use Case Visualization: 
-### UC1: Sequence Diagram: 
+#### UC1: Simulate Sensor Data: 
+Simulated IoT sensors generate data (e.g., temperature, humidity, vibration) at intervals for simulated locations and publish the readings as  messages to a Kafka topic. 
 ![UC1 - Simulate Sensor Data](Docs/Diagrams/UC1.png)
+
+#### UC2: Data Ingestion and Validation: 
+The ingestion service consumes raw sensor data from Kafka, tracks ingestion metrics, and forwards valid messages to feature extraction.         
+![UC2 - Data Ingestion and Validation](Docs/Diagrams/UC2.png)
+
+#### UC3: Data Ingestion and Validation: 
+The feature extraction service transforms raw sensor readings into engineered features such as ratios and squared values, and publishes the data to a Kafka topic.       
+![UC3 - Feature Extraction](Docs/Diagrams/UC3.png)
+
+#### UC4: Anomaly Detection: 
+The anomaly detection service applies a machine learning model to extracted features to classify sensor behavior as normal or anomalous, and publishes labeled results for visualization. 
+![UC4 - Anomaly Detection](Docs/Diagrams/UC4.png)
+
+#### UC5: Monitoring and Observability:
+The system exposes operational and sustainability metrics, which are collected by Prometheus and visualized in Grafana dashboards to monitor performance, anomalies, and system health. 
+![UC5 - Monitoring and Observability](Docs/Diagrams/UC5.png)
 
 
 
