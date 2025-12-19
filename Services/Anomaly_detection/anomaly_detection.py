@@ -4,6 +4,7 @@ import time
 import numpy as np
 from kafka import KafkaConsumer, KafkaProducer, errors
 from sklearn.ensemble import IsolationForest
+from prometheus_client import Counter, Histogram, start_http_server
 
 # ---------------- CONFIG ----------------
 KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "kafka:9092")
@@ -11,6 +12,29 @@ INPUT_TOPIC = "extracted-features"
 OUTPUT_TOPIC = "anomaly-results"
 
 MIN_TRAINING_SAMPLES = 100   # warm-up size
+
+# ---------------- PROMETHEUS METRICS ----------------
+anomaly_messages_consumed_total = Counter(
+    "anomaly_messages_consumed_total",
+    "Total messages consumed by anomaly detection"
+)
+
+anomalies_emitted_total = Counter(
+    "anomalies_emitted_total",
+    "Total anomaly results produced"
+)
+
+anomaly_errors_total = Counter(
+    "anomaly_errors_total",
+    "Total errors during anomaly detection"
+)
+
+anomaly_processing_seconds = Histogram(
+    "anomaly_processing_seconds",
+    "Time spent processing anomaly detection messages"
+)
+
+
 
 # ---------------- MODEL ----------------
 model = IsolationForest(
@@ -21,6 +45,9 @@ model = IsolationForest(
 
 feature_buffer = []
 model_fitted = False
+
+start_http_server(8003)
+print("[Metrics] Anomaly detection metrics on port 8003")
 
 # ---------------- WAIT FOR KAFKA ----------------
 while True:
@@ -48,6 +75,8 @@ while True:
 print("[Anomaly Detection] Listening for extracted features...")
 
 for msg in consumer:
+    start_time = time.time()
+    anomaly_messages_consumed_total.inc()
     try:
         data = json.loads(msg.value.decode("utf-8"))
         features = data["features"]
@@ -85,7 +114,11 @@ for msg in consumer:
         }
 
         producer.send(OUTPUT_TOPIC, value=result)
+        anomalies_emitted_total.inc()
         print(f"[Anomaly Detection] Sent result: {result}")
 
     except Exception as e:
         print(f"[Anomaly Detection] Failed to process message: {e}")
+
+    finally:
+        anomaly_processing_seconds.observe(time.time() - start_time)

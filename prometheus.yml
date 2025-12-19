@@ -2,6 +2,18 @@ global:
   scrape_interval: 5s
 
 scrape_configs:
-  - job_name: 'ingestion-service'
+  - job_name: "prometheus"
     static_configs:
-      - targets: ['ingestion-service:8001']
+      - targets: ["prometheus:9090"]
+
+  - job_name: "ingestion"
+    static_configs:
+      - targets: ["ingestion-service:8001"]
+
+  - job_name: "feature_extraction"
+    static_configs:
+      - targets: ["feature-extraction:8002"]
+
+  - job_name: "anomaly_detection"
+    static_configs:
+      - targets: ["anomaly-detection:8003"]
