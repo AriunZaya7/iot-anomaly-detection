@@ -63,5 +63,32 @@ The system exposes operational and sustainability metrics, which are collected b
 - monitoring/: Prometheus , Grafana
 - k8s/: Kubernetes deployment manifests??
 
+##Monitoring & Observability
+
+This project includes basic observability using **Prometheus** and **Grafana** to monitor the real-time IoT anomaly detection pipeline.
+
+### Metrics Collection (Prometheus)
+Each microservice exposes Prometheus metrics on a dedicated port:
+- **Ingestion Service** → `:8001`
+- **Feature Extraction Service** → `:8002`
+- **Anomaly Detection Service** → `:8003`
+
+Prometheus is configured to scrape all services and collect metrics such as:
+- messages processed per second
+- processing errors
+- end-to-end processing latency
+
+### Visualization (Grafana)
+Grafana is connected to Prometheus as a data source and can be used to visualize:
+- service health (`up` metrics)
+- throughput across pipeline stages
+- feature extraction and anomaly detection latency
+
+An example **IoT Pipeline Overview** dashboard is included and automatically provisioned at startup.
+
+### Access
+- **Prometheus UI**: http://localhost:9090  
+- **Grafana UI**:
+
 
 
