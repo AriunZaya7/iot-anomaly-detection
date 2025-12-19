@@ -76,7 +76,7 @@ services:
       - "3000:3000"
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/dashboards.yml:/var/lib/grafana/dashboards.yml
     networks:
       - iot-network
 
