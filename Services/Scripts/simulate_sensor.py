@@ -23,6 +23,9 @@ ANOMALY_PROB = 0.05  # point anomaly probability
 DRIFT_PROB = 0.01  # drift anomaly probability
 KAFKA_TOPIC = "raw-sensor-data"
 KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "kafka:9092")
+MISSING_FEATURE_PROB = 0.02   # 2% chance a feature is missing
+NULL_VALUE_PROB = 0.02       # 2% chance a feature is null
+
 
 # Sensor metadata options
 LOCATIONS = ["Room A", "Room B", "Room C", "Factory Floor", "Warehouse"]
@@ -79,11 +82,23 @@ class Sensor:
         if random.random() < ANOMALY_PROB:
             vibration += random.choice([-2, -1, 1, 2])
 
-        return {
+        features = {
             "temperature": round(temp, 2),
             "humidity": round(humidity, 2),
             "vibration": round(vibration, 2)
         }
+
+        # Occasionally remove a feature entirely
+        if random.random() < MISSING_FEATURE_PROB:
+            missing_key = random.choice(list(features.keys()))
+            del features[missing_key]
+
+        # Occasionally set a feature to null
+        elif random.random() < NULL_VALUE_PROB:
+            null_key = random.choice(list(features.keys()))
+            features[null_key] = None
+
+        return features
 
 
 # -------- MAIN LOOP --------

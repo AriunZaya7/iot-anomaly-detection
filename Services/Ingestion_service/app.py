@@ -6,23 +6,38 @@ import time
 import json
 import os
 
-# -------- CONFIG --------
 KAFKA_BROKER = os.environ.get("KAFKA_BROKER", "kafka:9092")
 TOPIC = "raw-sensor-data"
+REQUIRED_FEATURES = ["temperature", "humidity", "vibration"]
 
-# -------- PROMETHEUS METRICS --------
+
 messages_consumed_total = Counter("messages_consumed_total", "Total messages consumed from Kafka")
 messages_forwarded_total = Counter("messages_forwarded_total", "Total messages forwarded successfully")
 messages_invalid_total = Counter("messages_invalid_total", "Total messages that failed processing")
 
-# -------- FASTAPI --------
 app = FastAPI()
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-# -------- KAFKA CONSUMER FUNCTION --------
+
+def is_valid_message(data: dict) -> bool:
+    if "features" not in data:
+        return False
+
+    features = data["features"]
+
+    # Check for missing required features
+    for key in REQUIRED_FEATURES:
+        if key not in features:
+            return False
+        if features[key] is None:
+            return False
+
+    return True
+
+
 def consume_and_forward():
     print("[Ingestion] Starting Kafka consumer thread...")
     while True:
@@ -48,15 +63,20 @@ def consume_and_forward():
         messages_consumed_total.inc()
         try:
             data = json.loads(message.value.decode('utf-8'))
-            # Forward message (for now we just send it back to the same topic)
+
+            if not is_valid_message(data):
+                messages_invalid_total.inc()
+                print(f"[Ingestion] Invalid message dropped: {data}")
+                continue
+
             producer.send(TOPIC, value=data)
             messages_forwarded_total.inc()
-            print(f"[Ingestion] Consumed and forwarded message: {data}")
+            print(f"[Ingestion] Valid message forwarded: {data}")
+
         except Exception as e:
             print(f"[Ingestion] Failed to process message: {e}")
             messages_invalid_total.inc()
 
-# -------- PROMETHEUS METRICS FUNCTION --------
 def start_metrics_server():
     start_http_server(8001)
     print("[Metrics] Prometheus metrics server started on port 8001")
