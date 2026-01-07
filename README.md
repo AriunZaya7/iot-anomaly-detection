@@ -39,40 +39,51 @@ System consists of microservices that communicate using Kafka topics.
 
 
 ## Use cases: 
-| **Use Case ID** | **Name**                      | **Description**                                                                                                                                                                           |
-|-----------------|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| UC1             | Simulate Sensor Data          | Simulated IoT sensors generate data (e.g., temperature, humidity, vibration) at intervals for simulated locations and publish the readings as  messages to a Kafka topic.                 |
-| UC2             | Data Ingestion and Validation | The ingestion service consumes raw sensor data from Kafka, tracks ingestion metrics, and forwards valid messages to feature extraction.                                                   |
-| UC3             | Feature Extraction            | The feature extraction service transforms valid raw sensor readings into engineered features such as ratios and squared values, and publishes the data to a Kafka topic.                  |
-| UC4             | Anomaly Detection             | The anomaly detection service applies a machine learning model to extracted features to classify sensor behavior as normal or anomalous, and publishes labeled results for visualization. |
-| UC5             | Monitoring and Observability  | The system exposes operational and sustainability metrics, which are collected by Prometheus and visualized in Grafana dashboards to monitor performance, anomalies, and system health.   |
+| Use Case ID | Name | Description |
+|------------|------|-------------|
+| ASUC-1 | Real-Time Anomaly Detection on Streaming Data | The system processes continuous IoT sensor streams in real time, performs feature extraction and machine learning inference, and classifies incoming data as normal or anomalous with low latency. |
+| ASUC-2 | Scalable Ingestion from Thousands of IoT Devices | The system ingests data from thousands of IoT devices concurrently using a scalable messaging backbone, ensuring high throughput, partitioned processing, and horizontal scalability. |
+| ASUC-3 | Model Deployment and Rollback | The system supports versioned deployment of anomaly detection models, enabling safe rollout, monitoring, and rapid rollback to previous model versions in case of performance or reliability degradation. |
+| ASUC-4 | Anomaly Traceability and Explainability | The system records anomaly decisions along with contextual metadata, feature values, and model information to allow operators to trace, audit, and understand why anomalies were detected. |
+| ASUC-5 | Fault-Tolerant Operation under Partial Failure | The system continues operating under partial failures by applying retries, fallback modes, buffering, and dead-letter queues to prevent data loss and maintain service availability. |
+| ASUC-6 | Sustainability-Aware Adaptive Processing | The system adapts processing strategies based on resource usage and sustainability signals, dynamically adjusting sampling rates, feature complexity, and model selection to reduce energy and cost. |
+| ASUC-7 | Observability and SLO Enforcement | The system exposes operational metrics and service-level indicators that are monitored to enforce SLOs and trigger automated scaling, rollback, or degradation actions when thresholds are violated. |
+
 
 
 
 ### Use Case Visualization: 
-#### UC1: Simulate Sensor Data: 
-Simulated IoT sensors generate data (e.g., temperature, humidity, vibration) at intervals for simulated locations and publish the readings as  messages to a Kafka topic. 
-![UC1 - Simulate Sensor Data](Docs/Diagrams/UC1.png)
+#### ASUC-1: Real-Time Anomaly Detection on Streaming Data
+The system processes streaming IoT sensor data in real time and classifies incoming readings as normal or anomalous using a machine learning model.
+![UC1 - Simulate Sensor Data](Docs/UML/ASUC1.png)
 
-#### UC2: Data Ingestion and Validation: 
-The ingestion service consumes raw sensor data from Kafka, tracks ingestion metrics, and forwards valid messages to feature extraction.         
-![UC2 - Data Ingestion and Validation](Docs/Diagrams/UC2.png)
+#### ASUC-2: Scalable Ingestion from Thousands of IoT Devices
+The system ingests data from thousands of IoT devices concurrently using a scalable, partitioned Kafka-based messaging architecture.       
+![UC2 - Data Ingestion and Validation](Docs/UML/ASUC2.png)
 
-#### UC3: Data Ingestion and Validation: 
-The feature extraction service transforms raw sensor readings into engineered features such as ratios and squared values, and publishes the data to a Kafka topic.       
-![UC3 - Feature Extraction](Docs/Diagrams/UC3.png)
+#### ASUC-3: Model Deployment and Rollback 
+The system supports deploying new anomaly detection models and rolling back to previous versions when performance or reliability issues occur.    
+![UC3 - Feature Extraction](Docs/UML/ASUC3.png)
 
-#### UC4: Anomaly Detection: 
-The anomaly detection service applies a machine learning model to extracted features to classify sensor behavior as normal or anomalous, and publishes labeled results for visualization. 
-![UC4 - Anomaly Detection](Docs/Diagrams/UC4.png)
+#### ASUC-4: Anomaly Traceability and Explainability
+The system stores anomaly results with contextual metadata to allow operators to trace and understand detected anomalies. 
+![UC4 - Anomaly Detection](Docs/UML/ASUC4.png)
 
-#### UC5: Monitoring and Observability:
-The system exposes operational and sustainability metrics, which are collected by Prometheus and visualized in Grafana dashboards to monitor performance, anomalies, and system health. 
-![UC5 - Monitoring and Observability](Docs/Diagrams/UC5.png)
+#### ASUC-5: Fault-Tolerant Operation under Partial Failure
+The system continues operating during partial failures by using retries, buffering, and fallback mechanisms to prevent data loss.
+![UC5 - Monitoring and Observability](Docs/UML/ASUC5.png)
+
+#### ASUC-6: Sustainability-Aware Adaptive Processing
+The system continues operating during partial failures by using retries, buffering, and fallback mechanisms to prevent data loss.
+![UC5 - Monitoring and Observability](Docs/UML/ASUC6.png)
+
+#### ASUC-7: Observability and SLO Enforcement
+The system continues operating during partial failures by using retries, buffering, and fallback mechanisms to prevent data loss.
+![UC5 - Monitoring and Observability](Docs/UML/ASUC7.png)
 
 
 ## Component Diagram: 
-![C1 - components of iot anomaly detection](Docs/Diagrams/Component_d.png)
+![C1 - components of iot anomaly detection](Docs/UML/SystemUML.png)
 
 
 ## Application scaffolding: 
