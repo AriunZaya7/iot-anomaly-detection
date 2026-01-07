@@ -2,9 +2,15 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+# Copy requirements
+COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY feature_extraction.py .
+# Copy all code in current folder
+COPY . .
 
-CMD ["python", "feature_extraction.py"]
+# Set working directory
+WORKDIR /app
+
+# Run entry point
+CMD ["python", "main.py"]

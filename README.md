@@ -6,6 +6,23 @@ This project implements a cloud-native, microservice-based IoT data processing p
 ingests it using Apache Kafka, performs feature extraction, and detects anomalies using machine learning. 
 The system is observable using Prometheus and Grafana and is deployable via Docker Compose or Kubernetes.
 
+
+## Problem Definition
+
+We are building an *Anomaly Detection System* to automatically identify unusual sensor patterns in IoT data.
+
+This system is architecturally significant because it:
+- Ingests streaming data at scale (Cloud integration)
+- Applies ML-based anomaly detection (AI/ML component)
+- Must be highly reliable and observable
+- Influences resource usage & sustainability through adaptive processing
+
+Primary Use Cases:
+1. Detect anomalies in sensor streams in real-time
+2. Alert stakeholders when anomalies affect operational thresholds
+3. Log and trace anomalies for trend analysis and model improvement
+
+
 ## Architecture Overview: 
 System consists of microservices that communicate using Kafka topics. 
 **Microservices:**

@@ -4,6 +4,7 @@ networks:
     driver: bridge
 
 services:
+  # ---------------- Zookeeper ----------------
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.0
     container_name: zookeeper
@@ -15,6 +16,7 @@ services:
     networks:
       - iot-network
 
+  # ---------------- Kafka ----------------
   kafka:
     image: confluentinc/cp-kafka:7.6.0
     container_name: kafka
@@ -31,8 +33,11 @@ services:
     networks:
       - iot-network
 
+  # ---------------- Ingestion Service ----------------
   ingestion-service:
-    build: ./Services/Ingestion_service
+    build:
+      context: ./Services/ingestion_service
+      dockerfile: Dockerfile
     container_name: ingestion-service
     environment:
       KAFKA_BROKER: kafka:9092
@@ -40,12 +45,46 @@ services:
       - kafka
     ports:
       - "8000:8000"   # FastAPI
-      - "8001:8001"   # Prometheus metrics
+      - "8005:8002"   # Prometheus metrics
     networks:
       - iot-network
 
+  # ---------------- Feature Extraction ----------------
+  feature-extraction:
+    build:
+      context: ./Services/feature_extraction
+      dockerfile: Dockerfile
+    container_name: feature-extraction
+    environment:
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - kafka
+    ports:
+      - "8002:8002"
+    networks:
+      - iot-network
+
+  # ---------------- Anomaly Detection ----------------
+  anomaly-detection:
+    build:
+      context: ./Services/anomaly_detection
+      dockerfile: Dockerfile
+    container_name: anomaly-detection
+    environment:
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      - kafka
+      - feature-extraction
+    ports:
+      - "8003:8003"
+    networks:
+      - iot-network
+
+  # ---------------- Sensor Simulator ----------------
   simulator:
-    build: ./Services/Scripts
+    build:
+      context: ./Services/scripts
+      dockerfile: Dockerfile
     container_name: simulator
     environment:
       KAFKA_BROKER: kafka:9092
@@ -54,7 +93,7 @@ services:
     networks:
       - iot-network
 
-
+  # ---------------- Prometheus ----------------
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -69,6 +108,7 @@ services:
       - feature-extraction
       - anomaly-detection
 
+  # ---------------- Grafana ----------------
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
@@ -76,33 +116,8 @@ services:
       - "3000:3000"
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards.yml:/var/lib/grafana/dashboards.yml
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
     networks:
       - iot-network
-
-
-  feature-extraction:
-    build: ./Services/Feature_extraction
-    container_name: feature-extraction
-    environment:
-      KAFKA_BROKER: kafka:9092
     depends_on:
-      - kafka
-    ports:
-      - "8002:8002"
-    networks:
-      - iot-network
-
-  anomaly-detection:
-    build: ./Services/Anomaly_detection
-    container_name: anomaly-detection
-    environment:
-      KAFKA_BROKER: kafka:9092
-    depends_on:
-      - kafka
-      - feature-extraction
-    ports:
-      - "8003:8003"
-    networks:
-      - iot-network
-
+      - prometheus
