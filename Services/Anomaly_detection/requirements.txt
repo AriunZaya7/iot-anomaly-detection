@@ -2,3 +2,4 @@ numpy
 scikit-learn
 kafka-python
 prometheus_client
+codecarbon

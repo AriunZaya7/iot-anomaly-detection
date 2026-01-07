@@ -10,7 +10,7 @@ from metrics import (
     anomaly_messages_consumed_total,
     anomalies_emitted_total,
     anomaly_errors_total,
-    anomaly_processing_seconds
+    anomaly_processing_seconds,
 )
 
 
@@ -61,3 +61,4 @@ class AnomalyPipeline:
 
         finally:
             anomaly_processing_seconds.observe(time.time() - start_time)
+

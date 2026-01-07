@@ -1,7 +1,7 @@
 """
     metrics module for handling Prometheus metrics.
 """
-from prometheus_client import Counter, Histogram, start_http_server
+from prometheus_client import Counter, Histogram, start_http_server, Gauge
 from config import METRICS_PORT
 
 # Counters
@@ -24,6 +24,17 @@ anomaly_errors_total = Counter(
 anomaly_processing_seconds = Histogram(
     "anomaly_processing_seconds",
     "Time spent processing anomaly detection messages"
+)
+
+# ---------------- Carbon Metrics ----------------
+carbon_emissions_kg = Gauge(
+    "anomaly_detection_co2e_kg",
+    "Total estimated CO2e emissions (kg)"
+)
+
+carbon_per_message_kg = Gauge(
+    "anomaly_detection_co2e_per_message_kg",
+    "Average CO2e per processed message (kg)"
 )
 
 

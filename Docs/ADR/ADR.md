@@ -290,3 +290,38 @@ performing feature engineering, and publishing enriched feature messages to a do
 - **Reasoning:**  
   Adding lightweight derived features improves anomaly detection accuracy while keeping computational overhead low 
 for real-time streams.
+
+
+---
+**ID: ADR-013**  
+- **Title:** Integrate CodeCarbon for CO₂ emissions tracking  
+- **Status:** Proposed  
+- **Decision:** Introduce CodeCarbon into the anomaly detection pipeline to track energy consumption and estimate 
+CO₂ emissions. The tracker would:  
+  - Measure power usage (CPU, RAM, GPU if available) during pipeline execution. Specifically for the anomaly detection service
+  - Log emissions to a CSV (`emissions/emissions.csv`) for historical records.  
+  - Optionally provide live logs to console for monitoring.  
+  - Support integration with Prometheus metrics for batch-level CO₂ reporting.  
+- **Note:** At the moment, we cannot get the latest CodeCarbon (v2.x+) features to work with real-time Prometheus 
+metrics. Still a work in progress.
+- **Alternatives considered:**  
+  1. Do not track CO₂ emissions.  
+  2. Use latest CodeCarbon v2.x+ with custom parsing of CSV for metrics.  
+  3. Implement a custom internal CO₂ estimation model.  
+- **Trade-offs:**  
+  - **No tracking:** Zero overhead; cannot report environmental impact.  
+  - **CodeCarbon v2.x+:** Latest features; real-time numeric CO₂ not exposed; requires CSV parsing.  
+  - **Custom model:** Full control; high implementation and maintenance cost.  
+  - **CodeCarbon v1.6.3:** Supports direct access to `tracker.emissions` as float; integrates easily with Prometheus; low overhead; requires pinning version.  
+- **Consequence:**  
+  - Pipeline will track and log estimated CO₂ emissions per batch of processed messages.  
+  - Prometheus metrics provide observability in dashboards.  
+  - Provides historical data for sustainability reporting and optimization.  
+  - Requires testing to confirm measurement overhead is acceptable.  
+- **Reasoning:**  
+  Using CodeCarbon v1.6.3 balances simplicity, maintainability, and real-time observability. It allows the team to 
+report and monitor the carbon footprint of real-time IoT anomaly detection without introducing complex custom 
+calculations or relying on non-exposed APIs in newer versions.
+
+
+

@@ -121,5 +121,9 @@ An example **IoT Pipeline Overview** dashboard is included and automatically pro
 - **Prometheus UI**: http://localhost:9090  
 - **Grafana UI**: http://localhost:3000
 
-
+### Sustainability
+One of the ways we try to make sure our project was "sustainable" is a simple idea but could make a difference in how 
+projects are done nowadays. We tried to achieve this by refactoring. By writing code that is well structured and as clean as 
+possible we can already decrease the code carbon created by just existing code but not being used at all. This was an 
+idea that was introduced to us in another lecture. And we tried to implement that with this project as well. 
 

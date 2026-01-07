@@ -14,6 +14,10 @@ ISOLATION_FOREST_PARAMS = {
     "contamination": 0.05,
     "random_state": 42
 }
-
 # ---------------- Metrics ----------------
 METRICS_PORT = 8003
+
+# ---------------- Carbon Tracking ----------------
+CARBON_PROJECT_NAME = "iot-anomaly-detection"
+CARBON_MEASURE_POWER_SECS = 10     # low overhead
+CARBON_BATCH_SIZE = 500            # update metrics every N messages
